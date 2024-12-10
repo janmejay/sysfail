@@ -238,13 +238,17 @@ namespace sysfail {
         return r;
     }
 
+    const InvocationPredicate not_stdout_stderr = [](const greg_t* regs) {
+        return regs[REG_RDI] != 1 && regs[REG_RDI] != 2;
+    };
+
     TEST(Session, SeveralThreadsTest) {
         auto test_thd = gettid();
 
         sysfail::Plan p(
-            { {SYS_read, {0.33, 0, 0us, {{EIO, 1.0}}}},
-              {SYS_openat, {0.25, 0, 0us, {{EINVAL, 1.0}}}},
-              {SYS_write, {0.8, 0, 0us, {{EINVAL, 1.0}}}}},
+            { {SYS_read, {0.33, 0, 0us, {{EIO, 1.0}}, not_stdout_stderr}},
+              {SYS_openat, {0.25, 0, 0us, {{EINVAL, 1.0}}, not_stdout_stderr}},
+              {SYS_write, {0.8, 0, 0us, {{EINVAL, 1.0}}, not_stdout_stderr}}},
             [test_thd](pid_t tid) { return tid % 2 == 0 && tid != test_thd; },
             thread_discovery::None{});
 
@@ -312,7 +316,7 @@ namespace sysfail {
         auto test_thd = gettid();
 
         sysfail::Plan p(
-            { {SYS_read, {1.0, 0, 0us, {{EIO, 1.0}}}} },
+            { {SYS_read, {1.0, 0, 0us, {{EIO, 1.0}}, not_stdout_stderr}} },
             [](pid_t tid) { return true; },
             thread_discovery::None{});
 
