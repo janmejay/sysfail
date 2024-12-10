@@ -8,7 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)  # Enforce the specified C++ standard
 set(CMAKE_CXX_EXTENSIONS OFF)        # Disable compiler-specific extensions
 
 # use cmake -DCMAKE_BUILD_TYPE=Debug to build in debug mode
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O1 -g3 -ggdb")
+set(
+    CMAKE_CXX_FLAGS_DEBUG
+    "${CMAKE_CXX_FLAGS_DEBUG} -O1 -g3 -ggdb -fsanitize=address")
 
 # Include top-level include directory for shared headers
 include_directories(${CMAKE_SOURCE_DIR}/include)

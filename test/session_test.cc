@@ -126,7 +126,7 @@ namespace sysfail {
             sysfail::Session s(p);
             auto read_tm = 0ns, write_tm = 0ns;
             for (int i = 0; i < 100; i++) {
-                auto str = "foo bar " + i;
+                auto str = "foo bar " + std::to_string(i);
                 auto write_start = std::chrono::system_clock::now();
                 tFile.write(str);
                 write_tm += std::chrono::system_clock::now() - write_start;
@@ -140,7 +140,7 @@ namespace sysfail {
 
         auto read_tm = 0ns, write_tm = 0ns;
         for (int i = 0; i < 100; i++) {
-            auto str = "baz quux " + i;
+            auto str = "baz quux " + std::to_string(i);
             auto write_start = std::chrono::system_clock::now();
             tFile.write(str);
             write_tm += std::chrono::system_clock::now() - write_start;
@@ -192,7 +192,7 @@ namespace sysfail {
                 std::binomial_distribution<bool> rw_dist;
                 auto reader = rw_dist(rnd_eng);
                 auto disable_explicitly = rw_dist(rnd_eng);
-                threads.push_back(std::thread([&]() {
+                threads.push_back(std::thread([&, reader, disable_explicitly]() {
                     if (await_thread_disc == 0ms) {
                         s.add();
                     } else {
